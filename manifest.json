@@ -1,0 +1,22 @@
+{
+    "name": "Latidos - Ruta Turística Inclusiva",
+    "short_name": "Latidos",
+    "description": "Ruta Turística Patrimonial e Inclusiva por el Centro de Valencia",
+    "start_url": "/latidos/",
+    "display": "standalone",
+    "background_color": "#1a1a2e",
+    "theme_color": "#2a7a62",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Latidos - Ruta Turística Inclusiva</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="theme-color" content="#2a7a62">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <img src="logo.png" alt="Logo Unidos por un Latido" class="logo">
+            <h1>Latidos</h1>
+            <p class="subtitulo">Ruta Turística Patrimonial e Inclusiva</p>
+        </header>
+
+        <div class="welcome-section" id="welcomeSection">
+            <div id="userInfo" class="user-info"></div>
+            <div id="loginPanel">
+                <h3>Iniciar Sesión</h3>
+                <input type="email" id="loginEmail" placeholder="Correo electrónico">
+                <input type="password" id="loginPassword" placeholder="Contraseña">
+                <button id="loginBtn" class="btn-primary">Iniciar Sesión</button>
+                <button id="googleBtn" class="btn-google">Iniciar con Google</button>
+                <p>¿No tienes cuenta? <button id="showRegisterBtn" class="link-btn">Regístrate</button></p>
+            </div>
+            <div id="registerPanel" style="display:none;">
+                <h3>Registrarse</h3>
+                <input type="email" id="registerEmail" placeholder="Correo electrónico">
+                <input type="password" id="registerPassword" placeholder="Contraseña">
+                <button id="registerBtn" class="btn-primary">Crear Cuenta</button>
+                <p>¿Ya tienes cuenta? <button id="showLoginBtn" class="link-btn">Inicia Sesión</button></p>
+            </div>
+            <div id="loggedInPanel" style="display:none;">
+                <p>Bienvenido, <span id="userEmail"></span></p>
+                <button id="logoutBtn" class="btn-secondary">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <section class="map-section">
+            <h2>📍 Mapa de la Ruta</h2>
+            <div class="map-placeholder">
+                <p>Aquí irá el mapa interactivo con:</p>
+                <ul>
+                    <li>✅ Rampas disponibles</li>
+                    <li>💧 Puntos de hidratación</li>
+                    <li>🪑 Zonas de descanso con sombra</li>
+                    <li>🩺 Puntos de emergencia</li>
+                </ul>
+                <p class="map-note">(Próximamente: mapa interactivo con geolocalización)</p>
+            </div>
+        </section>
+
+        <section class="puntos-section">
+            <h2>📸 Puntos de Interés</h2>
+            <div class="puntos-grid" id="puntosGrid"></div>
+        </section>
+
+        <section class="actividad-section">
+            <h2>🎨 Actividad: Pinta tu Latido</h2>
+            <div class="actividad-card">
+                <p>Al llegar a la <strong>Plaza Bicentenario</strong>, te invitamos a dibujar o pintar tu lugar favorito del recorrido.</p>
+                <p>✏️ No necesitas materiales, nosotros te los prestamos.</p>
+                <p>📸 Tu obra es tuya: te la llevas a casa. Solo te pedimos que nos permitas <strong>tomarle una foto</strong> para que forme parte del latido colectivo de esta ruta.</p>
+                <p class="actividad-nota">(Con tu permiso, compartiremos las fotos en nuestras redes para inspirar a más personas a recorrer Valencia)</p>
+            </div>
+        </section>
+
+        <section class="comentarios-section">
+            <h2>💬 Comentarios de Visitantes</h2>
+            <div id="comentariosLista" class="comentarios-lista">
+                <p>Cargando comentarios...</p>
+            </div>
+            <div id="nuevoComentario" style="display:none;">
+                <textarea id="comentarioTexto" placeholder="¿Qué te pareció la ruta?"></textarea>
+                <button id="enviarComentarioBtn" class="btn-primary">Enviar Comentario</button>
+            </div>
+            <p id="loginParaComentar" class="aviso">Inicia sesión para dejar un comentario</p>
+        </section>
+
+        <footer>
+            <p>Unidos por un Latido - E.T. Fermín Toro, Valencia</p>
+            <p>🫀 Un latido que sigue vivo</p>
+        </footer>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

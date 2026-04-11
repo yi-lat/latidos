@@ -1,0 +1,274 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1a1a2e;
+    color: #eee;
+    line-height: 1.6;
+}
+
+.app-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.logo {
+    max-width: 150px;
+    margin-bottom: 15px;
+    border-radius: 20px;
+}
+
+h1 {
+    color: #ff6b6b;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+}
+
+.subtitulo {
+    color: #2a7a62;
+    font-size: 1rem;
+    margin-top: 5px;
+}
+
+.welcome-section {
+    background: #16213e;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    background: #0f3460;
+    color: white;
+    font-size: 1rem;
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: #2a7a62;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1e5c4a;
+}
+
+.btn-google {
+    background: #db4437;
+    color: white;
+}
+
+.btn-google:hover {
+    background: #c1351e;
+}
+
+.btn-secondary {
+    background: #555;
+    color: white;
+}
+
+.link-btn {
+    background: none;
+    color: #2a7a62;
+    text-decoration: underline;
+    width: auto;
+    display: inline;
+    padding: 0;
+}
+
+.link-btn:hover {
+    color: #ff6b6b;
+}
+
+.user-info {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #0f3460;
+    border-radius: 10px;
+}
+
+.map-section {
+    background: #16213e;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+}
+
+.map-placeholder {
+    background: #0f3460;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.map-placeholder ul {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.map-note {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #aaa;
+    font-style: italic;
+}
+
+.puntos-section {
+    margin-bottom: 25px;
+}
+
+.puntos-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.tarjeta {
+    background: #16213e;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.tarjeta:hover {
+    transform: translateY(-3px);
+}
+
+.tarjeta h3 {
+    background: #2a7a62;
+    padding: 12px 15px;
+    margin: 0;
+}
+
+.tarjeta p {
+    padding: 12px 15px;
+    color: #ccc;
+}
+
+.btn-audio {
+    background: #ff6b6b;
+    color: white;
+    width: calc(100% - 30px);
+    margin: 0 15px 15px 15px;
+    padding: 10px;
+}
+
+.btn-audio:hover {
+    background: #ff4f4f;
+}
+
+.actividad-section {
+    background: #16213e;
+    padding: 20px;
+    border-radius: 15px;
+    margin: 25px 0;
+    text-align: center;
+}
+
+.actividad-card {
+    background: #0f3460;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 15px;
+    border-left: 5px solid #ff6b6b;
+}
+
+.actividad-card p {
+    margin: 12px 0;
+}
+
+.actividad-nota {
+    font-size: 0.85rem;
+    color: #aaa;
+    font-style: italic;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dashed #2a7a62;
+}
+
+.comentarios-section {
+    background: #16213e;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+}
+
+.comentarios-lista {
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 15px 0;
+}
+
+.comentario {
+    background: #0f3460;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.comentario strong {
+    color: #ff6b6b;
+}
+
+.comentario small {
+    color: #aaa;
+    font-size: 0.7rem;
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #0f3460;
+    color: white;
+    font-family: inherit;
+    margin: 10px 0;
+}
+
+.aviso {
+    text-align: center;
+    color: #aaa;
+    font-style: italic;
+    padding: 15px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.8rem;
+    color: #888;
+    border-top: 1px solid #2a7a62;
+    margin-top: 20px;
+}

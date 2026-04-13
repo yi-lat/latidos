@@ -3,90 +3,491 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Latidos - Ruta Turística Inclusiva</title>
+    <title>Latidos - Unidos por un Latido</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
-    <meta name="theme-color" content="#2a7a62">
+    <meta name="theme-color" content="#6A0DAD">
+    
+    <!-- Firebase SDK (usando CDN) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        // ========== IMPORTAR FIREBASE ==========
+        import { initializeApp } from "firebase/app";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, updateProfile } from "firebase/auth";
+        import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, query, orderBy, serverTimestamp } from "firebase/firestore";
+        
+        // ========== TU CONFIGURACIÓN DE FIREBASE ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyAi-mdZ6bxvuWYiqliA1Z43IW6nQ0AWFSw",
+            authDomain: "latidos-val.firebaseapp.com",
+            projectId: "latidos-val",
+            storageBucket: "latidos-val.firebasestorage.app",
+            messagingSenderId: "960236339362",
+            appId: "1:960236339362:web:21024e098eb2e159c257fb"
+        };
+        
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+        
+        // ========== FUNCIONES GLOBALES ==========
+        window.registrarUsuario = async function(email, password, nombre, condicion) {
+            if (!email || !password || !nombre) {
+                alert("Por favor completa todos los campos obligatorios (*)");
+                return false;
+            }
+            try {
+                const result = await createUserWithEmailAndPassword(auth, email, password);
+                await updateProfile(result.user, { displayName: nombre });
+                
+                // Guardar datos en Firestore
+                await setDoc(doc(db, "usuarios", result.user.uid), {
+                    nombre: nombre,
+                    email: email,
+                    condicion: condicion || "ninguna",
+                    fechaRegistro: serverTimestamp()
+                });
+                
+                alert(`¡Bienvenido/a ${nombre}! Tu cuenta ha sido creada.`);
+                return true;
+            } catch (error) {
+                let mensaje = error.message;
+                if (error.code === 'auth/email-already-in-use') mensaje = "Este correo ya está registrado";
+                if (error.code === 'auth/weak-password') mensaje = "La contraseña debe tener al menos 6 caracteres";
+                alert("Error: " + mensaje);
+                return false;
+            }
+        };
+        
+        window.iniciarSesion = async function(email, password) {
+            if (!email || !password) {
+                alert("Completa todos los campos");
+                return false;
+            }
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                alert("¡Sesión iniciada correctamente!");
+                return true;
+            } catch (error) {
+                let mensaje = error.message;
+                if (error.code === 'auth/user-not-found') mensaje = "Usuario no encontrado";
+                if (error.code === 'auth/wrong-password') mensaje = "Contraseña incorrecta";
+                alert("Error: " + mensaje);
+                return false;
+            }
+        };
+        
+        window.iniciarConGoogle = async function() {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                // Verificar si ya existe en Firestore
+                const userDoc = await getDoc(doc(db, "usuarios", result.user.uid));
+                if (!userDoc.exists()) {
+                    await setDoc(doc(db, "usuarios", result.user.uid), {
+                        nombre: result.user.displayName || result.user.email.split('@')[0],
+                        email: result.user.email,
+                        condicion: "ninguna",
+                        fechaRegistro: serverTimestamp()
+                    });
+                }
+                alert(`¡Bienvenido/a ${result.user.displayName || result.user.email}!`);
+                return true;
+            } catch (error) {
+                alert("Error al iniciar con Google: " + error.message);
+                return false;
+            }
+        };
+        
+        window.cerrarSesion = async function() {
+            try {
+                await signOut(auth);
+                alert("Has cerrado sesión");
+                return true;
+            } catch (error) {
+                alert("Error: " + error.message);
+                return false;
+            }
+        };
+        
+        window.cambiarColorPorCondicion = function(condicion) {
+            const root = document.documentElement;
+            const colores = {
+                'disautonomia': '#40E0D0',
+                'tourette': '#008080',
+                'lupus': '#6A0DAD',
+                'esclerosis-multiple': '#6A0DAD',
+                'artritis': '#6A0DAD',
+                'tea': '#FF8C00',
+                'tdah': '#FF8C00',
+                'fibromialgia': '#FF69B4',
+                'ninguna': '#6A0DAD'
+            };
+            const color = colores[condicion] || '#6A0DAD';
+            root.style.setProperty('--color-principal', color);
+        };
+        
+        window.entrarComoInvitado = function() {
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("appContent").style.display = "block";
+            document.getElementById("welcomeMessage").innerHTML = "💜 Bienvenido/a Invitado a Latidos 💜";
+            document.documentElement.style.setProperty('--color-principal', '#6A0DAD');
+        };
+        
+        window.mostrarLoginTab = function(tab) {
+            const tabs = document.querySelectorAll('.login-tab');
+            const panels = document.querySelectorAll('.login-panel');
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginPanel').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('registerPanel').classList.add('active');
+            }
+        };
+        
+        window.mostrarSeccion = function(seccionId, elemento) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active-tab');
+            });
+            document.getElementById(seccionId).classList.add('active-tab');
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            if (elemento) elemento.classList.add('active');
+        };
+        
+        // ========== PUNTOS DE INTERÉS ==========
+        const puntosDeInteres = [
+            { nombre: "Plaza Bolívar", descripcion: "El corazón histórico de Valencia. Rodeada de edificios coloniales, árboles centenarios.", audio: "plaza-bolivar.mp3", imagen: "plaza-bolivar.jpg" },
+            { nombre: "Catedral de Valencia", descripcion: "Templo religioso con más de 400 años de historia. Mezcla de estilos arquitectónicos.", audio: "catedral.mp3", imagen: "catedral.jpg" },
+            { nombre: "Museo de Artes Vivas Alexis Mújica", descripcion: "Espacio dedicado al arte vivo y la creatividad.", audio: "museo-alexis-mujica.mp3", imagen: "museo.jpg" },
+            { nombre: "Teatro Municipal", descripcion: "Joyas arquitectónica del siglo XIX. Un teatro neoclásico.", audio: "teatro-municipal.mp3", imagen: "teatro.jpg" },
+            { nombre: "Plaza Bicentenario", descripcion: "🎨 Punto final. Actividad 'Pinta tu Latido'.", audio: "plaza-bicentenario.mp3", imagen: "plaza-bicentenario.jpg" }
+        ];
+        
+        function renderizarPuntos() {
+            const grid = document.getElementById("puntosGrid");
+            if (!grid) return;
+            let html = "";
+            puntosDeInteres.forEach(punto => {
+                html += `<div class="tarjeta-ruta">
+                            <img src="imagenes/${punto.imagen}" alt="${punto.nombre}" class="ruta-imagen" onerror="this.src='https://placehold.co/400x200?text=Imagen+pronto'">
+                            <div class="tarjeta-contenido">
+                                <h3>${punto.nombre}</h3>
+                                <p>${punto.descripcion}</p>
+                                <button class="btn-audio" data-audio="${punto.audio}">🎧 Escuchar Audioguía</button>
+                            </div>
+                         </div>`;
+            });
+            grid.innerHTML = html;
+            document.querySelectorAll('#ruta .btn-audio').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const audio = new Audio(`audios/${btn.dataset.audio}`);
+                    audio.play().catch(e => console.log("Audio no disponible aún"));
+                });
+            });
+        }
+        
+        function renderizarAudioguia() {
+            const lista = document.getElementById("audioguiaLista");
+            if (!lista) return;
+            let html = "";
+            puntosDeInteres.forEach(punto => {
+                html += `<div class="audioguia-item">
+                            <h3>🎧 ${punto.nombre}</h3>
+                            <button class="btn-audio" data-audio="${punto.audio}">Reproducir audioguía</button>
+                         </div>`;
+            });
+            lista.innerHTML = html;
+            document.querySelectorAll('#audioguias .btn-audio').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const audio = new Audio(`audios/${btn.dataset.audio}`);
+                    audio.play().catch(e => console.log("Audio no disponible aún"));
+                });
+            });
+        }
+        
+        // Cargar comentarios
+        async function cargarComentarios() {
+            const contenedor = document.getElementById("comentariosLista");
+            if (!contenedor) return;
+            contenedor.innerHTML = "<p>Cargando comentarios...</p>";
+            try {
+                const q = query(collection(db, "comentarios"), orderBy("fecha", "desc"));
+                const snapshot = await getDocs(q);
+                if (snapshot.empty) {
+                    contenedor.innerHTML = "<p>No hay comentarios aún. ¡Sé el primero en opinar!</p>";
+                    return;
+                }
+                let html = "";
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const fecha = data.fecha?.toDate() || new Date();
+                    html += `<div class="comentario"><strong>${data.usuario || "Anónimo"}</strong><small>${fecha.toLocaleDateString()}</small><p>${data.texto}</p></div>`;
+                });
+                contenedor.innerHTML = html;
+            } catch (error) {
+                contenedor.innerHTML = "<p>Inicia sesión para ver comentarios</p>";
+            }
+        }
+        
+        async function guardarComentario(comentario, usuarioEmail, usuarioNombre) {
+            if (!comentario.trim()) {
+                alert("Escribe un comentario");
+                return false;
+            }
+            try {
+                await addDoc(collection(db, "comentarios"), {
+                    texto: comentario,
+                    usuario: usuarioNombre || usuarioEmail,
+                    email: usuarioEmail,
+                    fecha: serverTimestamp()
+                });
+                alert("Comentario guardado. ¡Gracias!");
+                document.getElementById("comentarioTexto").value = "";
+                cargarComentarios();
+                return true;
+            } catch (error) {
+                alert("Error al guardar");
+                return false;
+            }
+        }
+        
+        // Escuchar cambios de autenticación
+        onAuthStateChanged(auth, async (user) => {
+            const loginSection = document.getElementById("loginSection");
+            const appContent = document.getElementById("appContent");
+            const userNameSpan = document.getElementById("userName");
+            const welcomeMessage = document.getElementById("welcomeMessage");
+            const nuevoComentarioDiv = document.getElementById("nuevoComentario");
+            const loginParaComentar = document.getElementById("loginParaComentar");
+            
+            if (user) {
+                loginSection.style.display = "none";
+                appContent.style.display = "block";
+                
+                const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+                const userData = userDoc.data();
+                const nombre = userData?.nombre || user.displayName || user.email.split('@')[0];
+                const condicion = userData?.condicion || "ninguna";
+                
+                userNameSpan.textContent = nombre;
+                welcomeMessage.innerHTML = `💜 Bienvenido/a ${nombre} a Latidos 💜`;
+                window.cambiarColorPorCondicion(condicion);
+                
+                if (nuevoComentarioDiv) nuevoComentarioDiv.style.display = "block";
+                if (loginParaComentar) loginParaComentar.style.display = "none";
+                cargarComentarios();
+            } else {
+                loginSection.style.display = "flex";
+                appContent.style.display = "none";
+                if (nuevoComentarioDiv) nuevoComentarioDiv.style.display = "none";
+                if (loginParaComentar) loginParaComentar.style.display = "block";
+            }
+        });
+        
+        // Configurar eventos después de cargar el DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarPuntos();
+            renderizarAudioguia();
+            
+            const enviarComentario = document.getElementById("enviarComentarioBtn");
+            if (enviarComentario) {
+                enviarComentario.onclick = () => {
+                    const user = auth.currentUser;
+                    if (user) {
+                        const comentario = document.getElementById("comentarioTexto")?.value;
+                        const nombre = user.displayName || user.email.split('@')[0];
+                        guardarComentario(comentario, user.email, nombre);
+                    } else {
+                        alert("Inicia sesión para comentar");
+                    }
+                };
+            }
+        });
+        
+        window.cargarComentarios = cargarComentarios;
+    </script>
 </head>
 <body>
     <div class="app-container">
-        <header>
-            <img src="logo.png" alt="Logo Unidos por un Latido" class="logo">
-            <h1>Latidos</h1>
-            <p class="subtitulo">Ruta Turística Patrimonial e Inclusiva</p>
-        </header>
-
-        <div class="welcome-section" id="welcomeSection">
-            <div id="userInfo" class="user-info"></div>
-            <div id="loginPanel">
-                <h3>Iniciar Sesión</h3>
-                <input type="email" id="loginEmail" placeholder="Correo electrónico">
-                <input type="password" id="loginPassword" placeholder="Contraseña">
-                <button id="loginBtn" class="btn-primary">Iniciar Sesión</button>
-                <button id="googleBtn" class="btn-google">Iniciar con Google</button>
-                <p>¿No tienes cuenta? <button id="showRegisterBtn" class="link-btn">Regístrate</button></p>
-            </div>
-            <div id="registerPanel" style="display:none;">
-                <h3>Registrarse</h3>
-                <input type="email" id="registerEmail" placeholder="Correo electrónico">
-                <input type="password" id="registerPassword" placeholder="Contraseña">
-                <button id="registerBtn" class="btn-primary">Crear Cuenta</button>
-                <p>¿Ya tienes cuenta? <button id="showLoginBtn" class="link-btn">Inicia Sesión</button></p>
-            </div>
-            <div id="loggedInPanel" style="display:none;">
-                <p>Bienvenido, <span id="userEmail"></span></p>
-                <button id="logoutBtn" class="btn-secondary">Cerrar Sesión</button>
+        <!-- PANTALLA DE LOGIN/REGISTRO -->
+        <div id="loginSection" class="login-section">
+            <div class="login-card">
+                <div class="circulos-decorativos">
+                    <div class="circulo" style="background: #40E0D0;"></div>
+                    <div class="circulo" style="background: #008080;"></div>
+                    <div class="circulo" style="background: #6A0DAD;"></div>
+                    <div class="circulo" style="background: #FF8C00;"></div>
+                    <div class="circulo" style="background: #FF69B4;"></div>
+                </div>
+                
+                <img src="logo.png" alt="Logo" class="login-logo" onerror="this.src='https://placehold.co/150x150?text=Latidos'">
+                <h1>Unidos por un Latido</h1>
+                <p class="tagline">Ruta Turística Patrimonial e Inclusiva</p>
+                
+                <div class="historia-breve">
+                    <p>🌸 <strong>En memoria de la Prof. Andrea Robles</strong> 🌸</p>
+                    <p>Una profesional excepcional que nos enseñó que la resiliencia y la pasión pueden más que cualquier adversidad. Este proyecto es su legado vivo.</p>
+                    <p>💜 Liderado por una estudiante con Disautonomía, para demostrar que las condiciones crónicas no definen nuestros límites, sino nuestra fuerza. 💜</p>
+                </div>
+                
+                <div class="login-tabs">
+                    <button class="login-tab active" onclick="mostrarLoginTab('login')">Iniciar Sesión</button>
+                    <button class="login-tab" onclick="mostrarLoginTab('register')">Registrarse</button>
+                </div>
+                
+                <div id="loginPanel" class="login-panel active">
+                    <input type="email" id="loginEmail" placeholder="Correo electrónico">
+                    <input type="password" id="loginPassword" placeholder="Contraseña">
+                    <button class="btn-primary" onclick="iniciarSesion(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)">Iniciar Sesión</button>
+                    <button class="btn-google" onclick="iniciarConGoogle()">Entrar con Google</button>
+                </div>
+                
+                <div id="registerPanel" class="login-panel">
+                    <input type="text" id="registerNombre" placeholder="* Tu nombre completo">
+                    <input type="email" id="registerEmail" placeholder="* Correo electrónico">
+                    <input type="password" id="registerPassword" placeholder="* Contraseña (mínimo 6 caracteres)">
+                    <select id="registerCondicion">
+                        <option value="">¿Cuál es tu condición? (opcional)</option>
+                        <option value="disautonomia">🩵 Disautonomía</option>
+                        <option value="tourette">💚 Síndrome de Tourette</option>
+                        <option value="lupus">💜 Lupus</option>
+                        <option value="esclerosis-multiple">💜 Esclerosis Múltiple</option>
+                        <option value="artritis">💜 Artritis Reumatoide</option>
+                        <option value="tea">🧡 TEA (Autismo)</option>
+                        <option value="tdah">🧡 TDAH</option>
+                        <option value="fibromialgia">🩷 Fibromialgia</option>
+                        <option value="acompanante">🤝 Soy acompañante</option>
+                        <option value="ninguna">💜 Ninguna / Prefiero no decirlo</option>
+                    </select>
+                    <button class="btn-primary" onclick="registrarUsuario(document.getElementById('registerEmail').value, document.getElementById('registerPassword').value, document.getElementById('registerNombre').value, document.getElementById('registerCondicion').value)">Crear Cuenta</button>
+                </div>
+                
+                <button class="btn-invitado" onclick="entrarComoInvitado()">Explorar como invitado</button>
             </div>
         </div>
-
-        <section class="map-section">
-            <h2>📍 Mapa de la Ruta</h2>
-            <div class="map-placeholder">
-                <p>Aquí irá el mapa interactivo con:</p>
-                <ul>
-                    <li>✅ Rampas disponibles</li>
-                    <li>💧 Puntos de hidratación</li>
-                    <li>🪑 Zonas de descanso con sombra</li>
-                    <li>🩺 Puntos de emergencia</li>
-                </ul>
-                <p class="map-note">(Próximamente: mapa interactivo con geolocalización)</p>
+        
+        <!-- CONTENIDO PRINCIPAL DE LA APP (solo visible después de login) -->
+        <div id="appContent" style="display:none;">
+            <header class="app-header">
+                <img src="logo.png" alt="Logo" class="logo-small" onerror="this.src='https://placehold.co/50x50?text=L'">
+                <div id="welcomeMessage" class="welcome-message">Bienvenido/a a Latidos</div>
+                <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+            </header>
+            
+            <nav class="bottom-nav">
+                <button class="nav-item active" onclick="mostrarSeccion('inicio', this)">🏠 Inicio</button>
+                <button class="nav-item" onclick="mostrarSeccion('ruta', this)">🗺️ Ruta</button>
+                <button class="nav-item" onclick="mostrarSeccion('audioguias', this)">🎧 Audioguías</button>
+                <button class="nav-item" onclick="mostrarSeccion('guias', this)">👥 Guías</button>
+                <button class="nav-item" onclick="mostrarSeccion('eventos', this)">📅 Eventos</button>
+                <button class="nav-item" onclick="mostrarSeccion('contacto', this)">📍 Contacto</button>
+            </nav>
+            
+            <!-- SECCIÓN INICIO -->
+            <div id="inicio" class="tab-content active-tab">
+                <div class="hero-section">
+                    <div class="circulos-flotantes">
+                        <div class="circulo-color" style="background: #40E0D0;"></div>
+                        <div class="circulo-color" style="background: #008080;"></div>
+                        <div class="circulo-color" style="background: #6A0DAD;"></div>
+                        <div class="circulo-color" style="background: #FF8C00;"></div>
+                        <div class="circulo-color" style="background: #FF69B4;"></div>
+                    </div>
+                    <h2>Un Latido que Late Fuerte</h2>
+                    <div class="historia-completa">
+                        <div class="recordatorio">
+                            <p>🫀 <strong>En memoria de la Prof. Andrea Robles</strong> 🫀</p>
+                            <p>No hay palabras para agradecer lo que nos enseñaste. La resiliencia no es un concepto, es verte llegar al aula con quimioterapia encima y una sonrisa. La pasión por el turismo no es una frase, es cada clase que diste como si fuera la última.</p>
+                            <p>Este proyecto es para ti, profe. Para que tu legado siga latiendo en cada paso que damos por Valencia.</p>
+                            <p>— Tus estudiantes, siempre agradecidos.</p>
+                        </div>
+                        <div class="liderazgo">
+                            <p>💪 <strong>Liderado por una guerrera invisible</strong> 💪</p>
+                            <p>Este proyecto nace del corazón de una estudiante con Disautonomía. Porque las condiciones invisibles también duelen, también limitan, pero también enseñan. Aquí, cada persona con una condición crónica encontrará un espacio donde su latido importa.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="estadisticas">
+                    <h3>Nuestro Impacto</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card"><span class="stat-number">5</span><span class="stat-label">Puntos</span></div>
+                        <div class="stat-card"><span class="stat-number">100%</span><span class="stat-label">Accesible</span></div>
+                        <div class="stat-card"><span class="stat-number">∞</span><span class="stat-label">Latidos</span></div>
+                    </div>
+                </div>
+                
+                <div class="comentarios-section">
+                    <h3>💬 Comentarios de Visitantes</h3>
+                    <div id="comentariosLista" class="comentarios-lista">Cargando...</div>
+                    <div id="nuevoComentario" style="display:none;">
+                        <textarea id="comentarioTexto" placeholder="¿Qué te pareció la ruta?"></textarea>
+                        <button id="enviarComentarioBtn" class="btn-primary">Enviar Comentario</button>
+                    </div>
+                    <p id="loginParaComentar" class="aviso">Inicia sesión para dejar un comentario</p>
+                </div>
             </div>
-        </section>
-
-        <section class="puntos-section">
-            <h2>📸 Puntos de Interés</h2>
-            <div class="puntos-grid" id="puntosGrid"></div>
-        </section>
-
-        <section class="actividad-section">
-            <h2>🎨 Actividad: Pinta tu Latido</h2>
-            <div class="actividad-card">
-                <p>Al llegar a la <strong>Plaza Bicentenario</strong>, te invitamos a dibujar o pintar tu lugar favorito del recorrido.</p>
-                <p>✏️ No necesitas materiales, nosotros te los prestamos.</p>
-                <p>📸 Tu obra es tuya: te la llevas a casa. Solo te pedimos que nos permitas <strong>tomarle una foto</strong> para que forme parte del latido colectivo de esta ruta.</p>
-                <p class="actividad-nota">(Con tu permiso, compartiremos las fotos en nuestras redes para inspirar a más personas a recorrer Valencia)</p>
+            
+            <!-- SECCIÓN RUTA -->
+            <div id="ruta" class="tab-content">
+                <h2>📍 Nuestra Ruta</h2>
+                <div class="puntos-grid" id="puntosGrid"></div>
+                <div class="actividad-section">
+                    <h3>🎨 Actividad: Pinta tu Latido</h3>
+                    <p>Al llegar a la Plaza Bicentenario, pinta tu lugar favorito. Tu obra es tuya, nosotros solo tomamos una foto para nuestro mural digital.</p>
+                </div>
             </div>
-        </section>
-
-        <section class="comentarios-section">
-            <h2>💬 Comentarios de Visitantes</h2>
-            <div id="comentariosLista" class="comentarios-lista">
-                <p>Cargando comentarios...</p>
+            
+            <!-- SECCIÓN AUDIOGUÍAS -->
+            <div id="audioguias" class="tab-content">
+                <h2>🎧 Audioguías</h2>
+                <div class="audioguia-lista" id="audioguiaLista"></div>
             </div>
-            <div id="nuevoComentario" style="display:none;">
-                <textarea id="comentarioTexto" placeholder="¿Qué te pareció la ruta?"></textarea>
-                <button id="enviarComentarioBtn" class="btn-primary">Enviar Comentario</button>
+            
+            <!-- SECCIÓN GUÍAS -->
+            <div id="guias" class="tab-content">
+                <h2>👥 Nuestros Guías Intérpretes</h2>
+                <div class="guias-grid">
+                    <div class="guia-card"><div class="guia-icon">👩‍🎓</div><h3>Yisell Betancourt</h3><p>Creadora del proyecto. Vive con Disautonomía. "Si yo puedo, tú también".</p><span class="guia-condicion">🩵 Disautonomía</span></div>
+                    <div class="guia-card"><div class="guia-icon">👨‍🎓</div><h3>Guías Estudiantiles</h3><p>Estudiantes de Turismo, Informática, Administración y Contabilidad de la E.T. Fermín Toro.</p><span class="guia-condicion">💜 Capacitados en atención inclusiva</span></div>
+                </div>
             </div>
-            <p id="loginParaComentar" class="aviso">Inicia sesión para dejar un comentario</p>
-        </section>
-
-        <footer>
-            <p>Unidos por un Latido - E.T. Fermín Toro, Valencia</p>
-            <p>🫀 Un latido que sigue vivo</p>
-        </footer>
+            
+            <!-- SECCIÓN EVENTOS -->
+            <div id="eventos" class="tab-content">
+                <h2>📅 Próximos Eventos</h2>
+                <div class="eventos-lista">
+                    <div class="evento-card"><div class="evento-fecha">📅 Próximamente</div><h3>Ruta Inaugural "Unidos por un Latido"</h3><p>Primer recorrido oficial con guías estudiantiles. Fecha por confirmar.</p><div class="evento-detalle">📍 Salida: E.T. Fermín Toro | 🕐 2 horas | 🎨 Incluye pintura</div></div>
+                    <div class="evento-card"><div class="evento-fecha">🔄 Permanente</div><h3>Pinta tu Latido - Exposición Digital</h3><p>Todas las fotos de las pinturas serán publicadas en redes sociales.</p></div>
+                </div>
+            </div>
+            
+            <!-- SECCIÓN CONTACTO -->
+            <div id="contacto" class="tab-content">
+                <h2>📍 Contacto y Ubicación</h2>
+                <div class="contacto-grid">
+                    <div class="contacto-info"><h3>E.T. Fermín Toro</h3><p>📌 Valencia, Carabobo, Venezuela</p><p>📧 latidos.ruta@gmail.com</p><p>📱 IG/TikTok: @unidosporunlatido</p><div class="mapa-placeholder"><p>🗺️ Punto de encuentro: E.T. Fermín Toro</p><p>Recorrido: Plaza Bolívar → Catedral → Museo Alexis Mújica → Teatro Municipal → Plaza Bicentenario</p></div></div>
+                    <div class="aliados"><h3>Aliados</h3><p>🏛️ Alcaldía de Valencia</p><p>🤝 CONAPDIS</p><p>🏫 E.T. Fermín Toro</p><p>💜 Comunidad de personas con condiciones crónicas</p></div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <script type="module" src="app.js"></script>
 </body>
 </html>

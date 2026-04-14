@@ -14,7 +14,7 @@ body {
     line-height: 1.6;
 }
 
-/* Login */
+/* ========== LOGIN ========== */
 .login-section {
     display: flex;
     justify-content: center;
@@ -52,11 +52,11 @@ body {
     border-radius: 50%;
     opacity: 0.15;
 }
-.circulo-login:nth-child(1) { top: -50px; left: -50px; }
-.circulo-login:nth-child(2) { top: 20px; right: -60px; }
-.circulo-login:nth-child(3) { bottom: -40px; left: -30px; }
-.circulo-login:nth-child(4) { bottom: 50px; right: -50px; }
-.circulo-login:nth-child(5) { top: 40%; left: -70px; }
+.circulo-login:nth-child(1) { top: -50px; left: -50px; background: #40E0D0; }
+.circulo-login:nth-child(2) { top: 20px; right: -60px; background: #008080; }
+.circulo-login:nth-child(3) { bottom: -40px; left: -30px; background: #6A0DAD; }
+.circulo-login:nth-child(4) { bottom: 50px; right: -50px; background: #FF8C00; }
+.circulo-login:nth-child(5) { top: 40%; left: -70px; background: #FF69B4; }
 
 .logo-login { width: 100px; border-radius: 20px; margin-bottom: 15px; }
 .login-card h1 { font-size: 1.8rem; font-weight: 800; color: var(--color-principal); }
@@ -74,20 +74,46 @@ input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #dd
 .btn-google { background: #db4437; color: white; padding: 12px; border-radius: 30px; cursor: pointer; width: 100%; margin-top: 10px; border: none; font-weight: 600; }
 .btn-invitado { background: transparent; border: 2px solid var(--color-principal); color: var(--color-principal); padding: 10px; border-radius: 30px; cursor: pointer; width: 100%; margin-top: 15px; font-weight: 600; }
 
-/* App */
-.header-app { background: var(--blanco); padding: 15px; border-radius: 0 0 30px 30px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+/* ========== APP PRINCIPAL ========== */
+.header-app {
+    background: var(--blanco);
+    padding: 15px;
+    border-radius: 0 0 30px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
 .logo-app { width: 45px; border-radius: 12px; }
 .saludo-app { font-weight: 700; color: var(--color-principal); text-align: center; flex: 1; }
 .btn-cerrar { background: #ff6b6b; color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; border: none; }
 
-.nav-botones { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 25px; }
-.boton-nav { background: transparent; color: #888; padding: 8px 16px; border-radius: 30px; cursor: pointer; border: none; font-weight: 600; font-size: 0.85rem; }
+/* ========== NAVEGACIÓN ========== */
+.nav-botones {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+.boton-nav {
+    background: transparent;
+    color: #888;
+    padding: 8px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
 .boton-nav.activo { background: var(--color-principal); color: white; }
 
+/* ========== SECCIONES ========== */
 .seccion-contenido { display: none; animation: fadeIn 0.3s; text-align: center; }
 .seccion-contenido.seccion-activa { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+/* ========== TARJETAS GENERALES ========== */
 .tarjeta, .tarjeta-ruta, .tarjeta-audio, .tarjeta-guia, .tarjeta-evento, .tarjeta-contacto {
     background: var(--blanco);
     border-radius: 30px;
@@ -104,9 +130,12 @@ h3 { font-weight: 700; margin-bottom: 10px; }
 .stat-numero { font-size: 2rem; font-weight: 800; color: var(--color-principal); }
 
 .texto-emocional { background: rgba(106,13,173,0.05); padding: 15px; border-radius: 20px; margin: 15px 0; }
+.texto-bonito { font-size: 1.2rem; font-weight: 700; color: var(--color-principal); margin: 15px 0; font-style: italic; }
+.homenaje { background: rgba(106,13,173,0.05); border-left: 5px solid var(--color-principal); }
+.firma { margin-top: 15px; font-style: italic; text-align: right; }
 
 .imagen-ruta { width: 100%; height: 180px; object-fit: cover; border-radius: 20px; margin-bottom: 15px; background: #eee; }
-.btn-audio { background: var(--color-principal); color: white; padding: 10px 20px; border-radius: 30px; cursor: pointer; border: none; font-weight: 600; margin-top: 10px; width: 100%; }
+.btn-audio { background: var(--color-principal); color: white; padding: 10px; border-radius: 30px; cursor: pointer; border: none; font-weight: 600; margin-top: 10px; width: 100%; }
 
 .icono-guia { font-size: 3rem; margin-bottom: 10px; }
 .etiqueta-condicion { display: inline-block; background: rgba(106,13,173,0.1); padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; margin-top: 10px; }
@@ -116,13 +145,70 @@ h3 { font-weight: 700; margin-bottom: 10px; }
 
 .circulos-fondo { position: relative; height: 80px; margin-bottom: 10px; }
 .circulo-fondo { position: absolute; width: 60px; height: 60px; border-radius: 50%; opacity: 0.15; }
-.circulo-fondo:nth-child(1) { top: 0; left: 5%; }
-.circulo-fondo:nth-child(2) { top: 10px; right: 10%; }
-.circulo-fondo:nth-child(3) { bottom: 0; left: 20%; }
-.circulo-fondo:nth-child(4) { top: 20px; right: 25%; }
-.circulo-fondo:nth-child(5) { bottom: 10px; left: 40%; }
+.circulo-fondo:nth-child(1) { top: 0; left: 5%; background: #40E0D0; }
+.circulo-fondo:nth-child(2) { top: 10px; right: 10%; background: #008080; }
+.circulo-fondo:nth-child(3) { bottom: 0; left: 20%; background: #6A0DAD; }
+.circulo-fondo:nth-child(4) { top: 20px; right: 25%; background: #FF8C00; }
+.circulo-fondo:nth-child(5) { bottom: 10px; left: 40%; background: #FF69B4; }
 
+/* ========== TARJETAS GIRATORIAS PARA EL EQUIPO ========== */
+.equipo-grid { display: flex; flex-direction: column; gap: 20px; }
+.tarjeta-giratoria {
+    background-color: transparent;
+    height: 320px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+.tarjeta-giratoria-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    border-radius: 25px;
+}
+.tarjeta-giratoria.volteada .tarjeta-giratoria-inner { transform: rotateY(180deg); }
+.tarjeta-front, .tarjeta-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 25px;
+    padding: 20px;
+    box-sizing: border-box;
+    background: var(--blanco);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+}
+.tarjeta-back { transform: rotateY(180deg); background: var(--color-principal); color: white; }
+.foto-guia { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; background: #ddd; }
+.video-guia { margin-top: 10px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; text-decoration: none; color: white; display: inline-block; }
+
+/* ========== PIE DE PÁGINA (FOOTER) ========== */
+.footer-app {
+    background: var(--blanco);
+    border-radius: 30px 30px 0 0;
+    padding: 20px;
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.8rem;
+    color: #666;
+    border-top: 2px solid var(--color-principal);
+}
+.footer-latido {
+    margin-top: 8px;
+    font-weight: 700;
+    color: var(--color-principal);
+}
+
+/* ========== RESPONSIVE ========== */
 @media (max-width: 600px) {
     .nav-botones { gap: 5px; }
     .boton-nav { font-size: 0.7rem; padding: 6px 10px; }
+    .tarjeta-giratoria { height: 380px; }
 }

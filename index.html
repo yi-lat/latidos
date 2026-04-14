@@ -158,6 +158,10 @@
             if (elemento) elemento.classList.add('activo');
         };
         
+        window.voltearTarjeta = function(elemento) {
+            elemento.classList.toggle('volteada');
+        };
+        
         function aplicarColor(condicion) {
             const color = coloresPorCondicion[condicion] || '#6A0DAD';
             document.documentElement.style.setProperty('--color-principal', color);
@@ -187,6 +191,7 @@
     </script>
 </head>
 <body>
+    <!-- PANTALLA DE LOGIN -->
     <div id="loginSection" class="login-section">
         <div class="login-card">
             <div class="circulos-login">
@@ -237,6 +242,7 @@
         </div>
     </div>
     
+    <!-- APP PRINCIPAL -->
     <div id="appContent" style="display:none;">
         <div class="header-app">
             <img src="logo.png" alt="Logo" class="logo-app">
@@ -244,15 +250,18 @@
             <button class="btn-cerrar" onclick="cerrarSesion()">Cerrar Sesión</button>
         </div>
         
+        <!-- Navegación -->
         <div class="nav-botones">
             <button class="boton-nav activo" onclick="mostrarSeccion('seccion-inicio', this)">🏠 Inicio</button>
+            <button class="boton-nav" onclick="mostrarSeccion('seccion-sobrenosotros', this)">💜 Sobre Nosotros</button>
             <button class="boton-nav" onclick="mostrarSeccion('seccion-ruta', this)">🗺️ Ruta</button>
             <button class="boton-nav" onclick="mostrarSeccion('seccion-audios', this)">🎧 Audioguías</button>
-            <button class="boton-nav" onclick="mostrarSeccion('seccion-guias', this)">👥 Guías</button>
+            <button class="boton-nav" onclick="mostrarSeccion('seccion-equipo', this)">👥 Guías y Equipo</button>
             <button class="boton-nav" onclick="mostrarSeccion('seccion-eventos', this)">📅 Eventos</button>
             <button class="boton-nav" onclick="mostrarSeccion('seccion-contacto', this)">📍 Contacto</button>
         </div>
         
+        <!-- SECCIÓN INICIO -->
         <div id="seccion-inicio" class="seccion-contenido seccion-activa">
             <div class="circulos-fondo">
                 <div class="circulo-fondo" style="background: #40E0D0;"></div>
@@ -269,6 +278,43 @@
             <div class="tarjeta"><h3>Nuestro Impacto</h3><div class="stats"><div><span class="stat-numero">5</span><br>Puntos</div><div><span class="stat-numero">100%</span><br>Accesible</div><div><span class="stat-numero">∞</span><br>Latidos</div></div></div>
         </div>
         
+        <!-- SECCIÓN SOBRE NOSOTROS -->
+        <div id="seccion-sobrenosotros" class="seccion-contenido">
+            <div class="circulos-fondo">
+                <div class="circulo-fondo" style="background: #40E0D0;"></div>
+                <div class="circulo-fondo" style="background: #008080;"></div>
+                <div class="circulo-fondo" style="background: #6A0DAD;"></div>
+                <div class="circulo-fondo" style="background: #FF8C00;"></div>
+                <div class="circulo-fondo" style="background: #FF69B4;"></div>
+            </div>
+            <div class="tarjeta">
+                <h2>💜 Unidos por un Latido 💜</h2>
+                <p class="texto-bonito">"Un latido que no se apaga, un legado que sigue caminando"</p>
+                <p>Este proyecto no nace de una idea cualquiera. Nace del corazón de una profesora que soñó con una ruta inclusiva en Valencia. Su corazón dejó de latir, pero su sueño no. <strong>Unidos por un Latido</strong> es nuestra promesa de que ese latido sigue vivo en cada paso que damos.</p>
+                <p>Es una forma de decirle gracias. Es la certeza de que un legado puede seguir latiendo incluso después de que el corazón se haya detenido. Cada persona que recorra esta ruta, cada estudiante que se forme como guía, cada turista que disfrute de Valencia, será un latido más de su legado.</p>
+            </div>
+            <div class="tarjeta">
+                <h3>✨ Nuestra Visión ✨</h3>
+                <p>Ser la primera ruta turística patrimonial e inclusiva de Venezuela que sea reconocida por MINTUR y CONAPDIS, donde las personas con condiciones visibles e invisibles se sientan bienvenidas, seguras y protagonistas de su propia experiencia turística.</p>
+            </div>
+            <div class="tarjeta">
+                <h3>🎯 Nuestro Propósito 🎯</h3>
+                <p>Demostrar que la accesibilidad no es solo rampas. Es crear un entorno donde todas las personas, sin importar su condición, puedan disfrutar del patrimonio de Valencia con dignidad, autonomía y alegría. Es también generar oportunidades de pasantías dignas para estudiantes en situación de vulnerabilidad, demostrando que la educación técnica puede ser un motor de inclusión.</p>
+            </div>
+            <div class="tarjeta homenaje">
+                <h3>🫀 En memoria de la Prof. Andrea Robles 🫀</h3>
+                <p>No hay palabras para agradecer lo que nos enseñaste. La resiliencia no es un concepto, es verte llegar al aula con quimioterapia encima y una sonrisa. La pasión por el turismo no es una frase, es cada clase que diste como si fuera la última.</p>
+                <p>Este proyecto es para ti, profe. Para que tu legado siga latiendo en cada paso que damos por Valencia. Gracias por enseñarnos que la mejor lección no está en los libros, sino en la valentía de vivir.</p>
+                <p class="firma">— Tus estudiantes, siempre agradecidos. 💜</p>
+            </div>
+            <div class="tarjeta">
+                <h3>💪 Liderado por una guerrera invisible 💪</h3>
+                <p>Este proyecto nace del corazón de una estudiante de turismo con Disautonomía. Porque las condiciones invisibles también duelen, también limitan, pero también enseñan. Aquí, cada persona con una condición crónica encontrará un espacio donde su latido importa.</p>
+                <p>Si ella pudo, tú también. Porque los límites no los pone la condición, los pone el amor con que se hace lo que se hace.</p>
+            </div>
+        </div>
+        
+        <!-- SECCIÓN RUTA -->
         <div id="seccion-ruta" class="seccion-contenido">
             <h2>📍 Nuestra Ruta</h2>
             <div class="tarjeta-ruta"><img src="imagenes/plaza-bolivar.jpg" class="imagen-ruta" onerror="this.src='https://placehold.co/400x200?text=Plaza+Bolivar'"><h3>Plaza Bolívar</h3><p>El corazón histórico de Valencia.</p><button class="btn-audio" data-audio="plaza-bolivar.mp3">🎧 Escuchar audioguía</button></div>
@@ -278,6 +324,7 @@
             <div class="tarjeta-ruta"><img src="imagenes/plaza-bicentenario.jpg" class="imagen-ruta" onerror="this.src='https://placehold.co/400x200?text=Plaza+Bicentenario'"><h3>Plaza Bicentenario</h3><p>🎨 Punto final. Actividad "Pinta tu Latido"</p><button class="btn-audio" data-audio="plaza-bicentenario.mp3">🎧 Escuchar audioguía</button></div>
         </div>
         
+        <!-- SECCIÓN AUDIOGUÍAS -->
         <div id="seccion-audios" class="seccion-contenido">
             <h2>🎧 Audioguías</h2>
             <div class="tarjeta-audio"><h3>Plaza Bolívar</h3><button class="btn-audio" data-audio="plaza-bolivar.mp3">▶ Reproducir</button></div>
@@ -287,23 +334,134 @@
             <div class="tarjeta-audio"><h3>Plaza Bicentenario</h3><button class="btn-audio" data-audio="plaza-bicentenario.mp3">▶ Reproducir</button></div>
         </div>
         
-        <div id="seccion-guias" class="seccion-contenido">
-            <h2>👥 Guías Intérpretes</h2>
-            <div class="tarjeta-guia"><div class="icono-guia">👩‍🎓</div><h3>Yisell Betancourt</h3><p>Creadora del proyecto. Vive con Disautonomía.</p><span class="etiqueta-condicion">🩵 Disautonomía</span></div>
-            <div class="tarjeta-guia"><div class="icono-guia">👨‍🎓</div><h3>Guías Estudiantiles</h3><p>Estudiantes de la E.T. Fermín Toro capacitados en atención inclusiva.</p><span class="etiqueta-condicion">💜 Inclusión</span></div>
+        <!-- SECCIÓN GUÍAS Y EQUIPO (con tarjetas giratorias) -->
+        <div id="seccion-equipo" class="seccion-contenido">
+            <h2>👥 Guías y Equipo</h2>
+            <p class="centrado">Conócenos. Toca cada tarjeta para ver más sobre nosotros.</p>
+            
+            <div class="equipo-grid">
+                <!-- Yisell - Guía y creadora (17 años, 5to año) -->
+                <div class="tarjeta-giratoria" onclick="voltearTarjeta(this)">
+                    <div class="tarjeta-giratoria-inner">
+                        <div class="tarjeta-front">
+                            <img src="imagenes/yisell.jpg" class="foto-guia" onerror="this.src='https://placehold.co/100x100?text=Yisell'">
+                            <h3>Yisell Betancourt</h3>
+                            <p>🎓 17 años - 5to año - Turismo</p>
+                            <span class="etiqueta-guia">🩵 Disautonomía</span>
+                            <p><small>👆 Toca para conocer más</small></p>
+                        </div>
+                        <div class="tarjeta-back">
+                            <h3>✨ Más sobre mí ✨</h3>
+                            <p>📌 Creadora del proyecto y desarrolladora de la PWA "Latidos"</p>
+                            <p>📚 Cursos: Atención al Turista Inclusivo, Primeros Auxilios, Guionismo Turístico, Desarrollo Web y Firebase</p>
+                            <p>💪 Experiencia: Vivir con Disautonomía me enseñó que los límites están en la mente. Si yo puedo recorrer Valencia, tú también.</p>
+                            <a href="#" class="video-guia">🎥 Ver video de presentación (próximamente)</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Guía 2: Estudiante de Turismo -->
+                <div class="tarjeta-giratoria" onclick="voltearTarjeta(this)">
+                    <div class="tarjeta-giratoria-inner">
+                        <div class="tarjeta-front">
+                            <img src="imagenes/guia2.jpg" class="foto-guia" onerror="this.src='https://placehold.co/100x100?text=Guia'">
+                            <h3>María González</h3>
+                            <p>🎓 16 años - 5to año - Turismo</p>
+                            <span class="etiqueta-guia">💜 Ninguna</span>
+                            <p><small>👆 Toca para conocer más</small></p>
+                        </div>
+                        <div class="tarjeta-back">
+                            <h3>✨ Más sobre mí ✨</h3>
+                            <p>📌 Guía de ruta</p>
+                            <p>📚 Cursos: Historia de Valencia, Atención Inclusiva, Inglés Turístico</p>
+                            <p>🌱 Experiencia: Voluntaria en eventos culturales</p>
+                            <a href="#" class="video-guia">🎥 Ver video (próximamente)</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Detrás de cámaras: Informática -->
+                <div class="tarjeta-giratoria" onclick="voltearTarjeta(this)">
+                    <div class="tarjeta-giratoria-inner">
+                        <div class="tarjeta-front">
+                            <img src="imagenes/informatica.jpg" class="foto-guia" onerror="this.src='https://placehold.co/100x100?text=Dev'">
+                            <h3>Equipo de Informática</h3>
+                            <p>🎓 5to año - Informática</p>
+                            <span class="etiqueta-guia">💻 Detrás de cámaras</span>
+                            <p><small>👆 Toca para conocer más</small></p>
+                        </div>
+                        <div class="tarjeta-back">
+                            <h3>✨ Detrás de cámaras ✨</h3>
+                            <p>📌 Desarrollo y mantenimiento de la PWA, códigos QR, audioguías</p>
+                            <p>📚 Cursos: Programación Web, Firebase, Diseño Accesible WCAG</p>
+                            <p>🛠️ Experiencia: Creación de apps inclusivas</p>
+                            <a href="#" class="video-guia">🎥 Ver video (próximamente)</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Detrás de cámaras: Administración -->
+                <div class="tarjeta-giratoria" onclick="voltearTarjeta(this)">
+                    <div class="tarjeta-giratoria-inner">
+                        <div class="tarjeta-front">
+                            <img src="imagenes/admin.jpg" class="foto-guia" onerror="this.src='https://placehold.co/100x100?text=Admin'">
+                            <h3>Equipo de Administración</h3>
+                            <p>🎓 5to año - Administración</p>
+                            <span class="etiqueta-guia">📋 Detrás de cámaras</span>
+                            <p><small>👆 Toca para conocer más</small></p>
+                        </div>
+                        <div class="tarjeta-back">
+                            <h3>✨ Detrás de cámaras ✨</h3>
+                            <p>📌 Gestión de convenios, permisos, logística de la ruta</p>
+                            <p>📚 Cursos: Gestión de Proyectos, Atención al Cliente</p>
+                            <p>📊 Experiencia: Organización de eventos escolares</p>
+                            <a href="#" class="video-guia">🎥 Ver video (próximamente)</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Detrás de cámaras: Contabilidad -->
+                <div class="tarjeta-giratoria" onclick="voltearTarjeta(this)">
+                    <div class="tarjeta-giratoria-inner">
+                        <div class="tarjeta-front">
+                            <img src="imagenes/contabilidad.jpg" class="foto-guia" onerror="this.src='https://placehold.co/100x100?text=Conta'">
+                            <h3>Equipo de Contabilidad</h3>
+                            <p>🎓 5to año - Contabilidad</p>
+                            <span class="etiqueta-guia">💰 Detrás de cámaras</span>
+                            <p><small>👆 Toca para conocer más</small></p>
+                        </div>
+                        <div class="tarjeta-back">
+                            <h3>✨ Detrás de cámaras ✨</h3>
+                            <p>📌 Presupuesto, factibilidad económica, gestión de recursos</p>
+                            <p>📚 Cursos: Contabilidad Básica, Análisis Financiero</p>
+                            <p>📈 Experiencia: Gestión de fondos para proyectos escolares</p>
+                            <a href="#" class="video-guia">🎥 Ver video (próximamente)</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         
+        <!-- SECCIÓN EVENTOS -->
         <div id="seccion-eventos" class="seccion-contenido">
             <h2>📅 Próximos Eventos</h2>
             <div class="tarjeta-evento"><div class="fecha-evento">📅 Próximamente</div><h3>Ruta Inaugural</h3><p>Primer recorrido oficial con guías estudiantiles.</p><div class="detalle-evento">📍 Salida: E.T. Fermín Toro | 🕐 2 horas | 🎨 Incluye pintura</div></div>
             <div class="tarjeta-evento"><div class="fecha-evento">🔄 Permanente</div><h3>Pinta tu Latido</h3><p>Exposición digital de las pinturas de nuestros visitantes.</p></div>
         </div>
         
+        <!-- SECCIÓN CONTACTO -->
         <div id="seccion-contacto" class="seccion-contenido">
             <h2>📍 Contacto</h2>
             <div class="tarjeta-contacto"><h3>E.T. Fermín Toro</h3><p>📌 Valencia, Carabobo, Venezuela</p><p>📧 latidos.ruta@gmail.com</p><p>📱 IG/TikTok: @unidosporunlatido</p></div>
             <div class="tarjeta-contacto"><h3>Aliados</h3><p>🏛️ Alcaldía de Valencia</p><p>🤝 CONAPDIS</p><p>🏫 E.T. Fermín Toro</p></div>
         </div>
+        
+        <!-- PIE DE PÁGINA (FOOTER) -->
+        <footer class="footer-app">
+            <p>Ruta Turística Patrimonial e Inclusiva - Unidos por un Latido</p>
+            <p>E.T. Fermín Toro - Valencia, Venezuela</p>
+            <p class="footer-latido">🫀 Un latido que sigue vivo 🫀</p>
+        </footer>
     </div>
     
     <script>

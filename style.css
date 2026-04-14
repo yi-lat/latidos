@@ -1,145 +1,99 @@
-/* VARIABLES Y RESET */
 :root {
     --bg-cream: #F5F5DC;
-    --texto: #2F2F2F;
     --color-principal: #6A0DAD;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
+    margin: 0;
+    font-family: sans-serif;
     background-color: var(--bg-cream);
-    font-family: 'Segoe UI', Roboto, sans-serif;
-    color: var(--texto);
-    min-height: 100vh;
-    padding-bottom: 80px;
-}
-
-/* CÍRCULOS DE FONDO (BLOBS) */
-.blob {
-    position: fixed;
-    border-radius: 50%;
-    z-index: -1;
-    filter: blur(65px);
-    opacity: 0.25;
-    animation: move 20s infinite alternate ease-in-out;
-}
-.b1 { width: 300px; height: 300px; top: -50px; left: -50px; background: #40E0D0; }
-.b2 { width: 350px; height: 350px; bottom: 0; right: -50px; background: #FF69B4; }
-.b3 { width: 200px; height: 200px; top: 40%; right: 10%; background: #FF8C00; }
-
-@keyframes move {
-    from { transform: translate(0,0); }
-    to { transform: translate(50px, 50px); }
-}
-
-/* CONTENEDORES GLASS */
-.full-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding: 20px;
-}
-
-.card-glass {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-    border-radius: 25px;
-    padding: 25px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-    border: 3px solid var(--color-principal);
-}
-
-.login-box {
-    width: 100%;
-    max-width: 380px;
+    color: #333;
     text-align: center;
 }
 
-.info-card {
-    margin: 15px;
-    border-left: 6px solid var(--color-principal);
+/* Círculos definidos (No difuminados exagerados) */
+.circulo {
+    position: fixed;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.6;
+}
+.c1 { width: 200px; height: 200px; background: #40E0D0; top: -50px; left: -50px; }
+.c2 { width: 250px; height: 250px; background: #FF69B4; bottom: 50px; right: -50px; }
+.c3 { width: 150px; height: 150px; background: #FF8C00; top: 40%; right: 10%; }
+
+/* Tarjetas */
+.login-card, .card {
+    background: white;
+    margin: 20px auto;
+    padding: 30px;
+    width: 85%;
+    max-width: 400px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border: 2px solid var(--color-principal);
 }
 
-/* MENSAJE ESPECIAL DISAUTONOMÍA */
-.msg-disautonomia {
-    display: none;
-    margin-top: 10px;
-    padding: 10px;
-    background: var(--color-principal);
-    color: white;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    animation: fadeIn 1s;
+.memorial {
+    border: 2px dashed var(--color-principal);
+    background: #fffafa;
 }
-.msg-disautonomia.active { display: block; }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-/* FORMULARIOS */
-input, select {
+/* Botones Grandes para Accesibilidad */
+input {
     width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 12px;
-    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
 }
 
-.btn-main {
+.btn-primary {
     background: var(--color-principal);
     color: white;
     border: none;
-    padding: 14px;
+    padding: 15px;
     width: 100%;
-    border-radius: 12px;
+    border-radius: 10px;
+    font-size: 18px;
     font-weight: bold;
     cursor: pointer;
     margin-top: 10px;
 }
 
-/* NAVEGACIÓN Y FOOTER */
-.header-main {
-    padding: 20px;
-    background: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 4px solid var(--color-principal);
-}
-
-.nav-bottom {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    padding: 10px 30px;
-    border-radius: 50px;
-    display: flex;
-    gap: 30px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
-
-.nav-bottom button {
-    background: none;
-    border: none;
-    font-size: 1.6rem;
+.btn-guest {
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 12px;
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 15px;
     cursor: pointer;
 }
 
-.footer-app {
-    text-align: center;
-    padding: 20px;
-    font-size: 0.75rem;
-    color: #777;
+/* Navegación Inferior */
+.nav-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 2px solid var(--color-principal);
 }
 
-.memorial {
-    background: rgba(255, 250, 240, 0.9);
-    border: 1px dashed var(--color-principal);
+.nav-bar button {
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #555;
+}
+
+footer {
+    padding: 20px 20px 100px 20px;
+    font-size: 12px;
+    color: #777;
 }

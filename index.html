@@ -2,13 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Latidos - Unidos por un Latido</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidos por un Latido</title>
+    <link rel="stylesheet" href="style.css?v=force_5">
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -24,157 +24,116 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Lógica de personalización por condición
-        window.aplicarEstiloCondicion = function(condicion) {
+        // Función para cambiar colores
+        window.cambiarColor = (condicion) => {
             const root = document.documentElement;
-            const msgEspecial = document.getElementById('mensajeEspecial');
-            
             const colores = {
-                'disautonomia': '#40E0D0', // Turquesa
-                'tea': '#FF8C00',         // Naranja
-                'lupus': '#6A0DAD',       // Morado
-                'fibromialgia': '#FF69B4', // Rosado
+                'disautonomia': '#40E0D0',
+                'tea': '#FF8C00',
+                'cronica': '#6A0DAD',
                 'ninguna': '#6A0DAD'
             };
-
             root.style.setProperty('--color-principal', colores[condicion] || '#6A0DAD');
-
-            if (condicion === 'disautonomia') {
-                msgEspecial.innerHTML = "✨ <strong>Si yo puedo, ¡tú también!</strong><br>Nuestra fuerza no está en el pulso, sino en el alma.";
-                msgEspecial.className = "msg-disautonomia active";
-            } else {
-                msgEspecial.className = "msg-disautonomia";
+            if(condicion === 'disautonomia') {
+                document.getElementById('msgInclusivo').innerText = "💪 Si yo puedo, ¡tú también!";
             }
         };
 
-        onAuthStateChanged(auth, async (user) => {
-            const loginView = document.getElementById("loginSection");
-            const appView = document.getElementById("appContent");
-            if (user) {
-                const docSnap = await getDoc(doc(db, "usuarios", user.uid));
-                const data = docSnap.data();
-                window.aplicarEstiloCondicion(data?.condicion || "ninguna");
-                document.getElementById('userName').innerText = data?.nombre || user.displayName || "Usuario";
-                loginView.style.display = "none";
-                appView.style.display = "block";
-            } else {
-                loginView.style.display = "flex";
-                appView.style.display = "none";
-            }
-        });
-
-        window.registrar = async () => {
-            const nombre = document.getElementById('regNombre').value;
-            const condicion = document.getElementById('regCondicion').value;
-            const email = document.getElementById('regEmail').value;
-            const pass = document.getElementById('regPass').value;
-            try {
-                const res = await createUserWithEmailAndPassword(auth, email, pass);
-                await setDoc(doc(db, "usuarios", res.user.uid), { nombre, condicion });
-            } catch (e) { alert("Error: " + e.message); }
+        // ENTRAR COMO INVITADO (Rápido y fácil)
+        window.entrarInvitado = () => {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('appContent').style.display = 'block';
+            document.getElementById('userName').innerText = "Invitado";
         };
 
         window.entrar = async () => {
-            const email = document.getElementById('logEmail').value;
-            const pass = document.getElementById('logPass').value;
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
             try { await signInWithEmailAndPassword(auth, email, pass); } 
-            catch (e) { alert("Error: " + e.message); }
+            catch (e) { alert("Revisa tus datos o entra como invitado."); }
         };
 
-        window.salir = () => signOut(auth);
-        window.mostrarTab = (id) => {
-            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const docSnap = await getDoc(doc(db, "usuarios", user.uid));
+                const data = docSnap.data();
+                window.cambiarColor(data?.condicion || 'ninguna');
+                document.getElementById('userName').innerText = data?.nombre || "Usuario";
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('appContent').style.display = 'block';
+            }
+        });
+
+        window.navegar = (id) => {
+            document.querySelectorAll('.seccion').forEach(s => s.style.display = 'none');
             document.getElementById(id).style.display = 'block';
         };
     </script>
 </head>
 <body>
-    <div class="blob b1"></div>
-    <div class="blob b2"></div>
-    <div class="blob b3"></div>
+    <div class="circulo c1"></div>
+    <div class="circulo c2"></div>
+    <div class="circulo c3"></div>
 
-    <section id="loginSection" class="full-center">
-        <div class="card-glass login-box">
+    <section id="loginSection" class="auth-page">
+        <div class="login-card">
             <h1>Unidos por un Latido</h1>
-            <p class="subtitle">Proyecto Conciencia</p>
+            <p>Proyecto Conciencia</p>
             
-            <div id="loginForm">
-                <input type="email" id="logEmail" placeholder="Correo electrónico">
-                <input type="password" id="logPass" placeholder="Contraseña">
-                <button class="btn-main" onclick="entrar()">Iniciar Sesión</button>
-                <p class="link" onclick="this.parentElement.style.display='none'; document.getElementById('regForm').style.display='block';">¿No tienes cuenta? Regístrate</p>
-            </div>
-
-            <div id="regForm" style="display:none;">
-                <input type="text" id="regNombre" placeholder="Tu nombre">
-                <input type="email" id="regEmail" placeholder="Correo">
-                <input type="password" id="regPass" placeholder="Contraseña">
-                <select id="regCondicion">
-                    <option value="ninguna">Selecciona tu condición</option>
-                    <option value="disautonomia">🩵 Disautonomía</option>
-                    <option value="tea">🧡 TEA / TDAH</option>
-                    <option value="lupus">💜 Enfermedades Crónicas</option>
-                    <option value="fibromialgia">🩷 Fibromialgia</option>
-                </select>
-                <button class="btn-main" onclick="registrar()">Crear Cuenta</button>
-                <p class="link" onclick="this.parentElement.style.display='none'; document.getElementById('loginForm').style.display='block';">Ya tengo cuenta</p>
-            </div>
+            <input type="email" id="email" placeholder="Correo">
+            <input type="password" id="pass" placeholder="Contraseña">
+            
+            <button class="btn-primary" onclick="entrar()">Iniciar Sesión</button>
+            <button class="btn-guest" onclick="entrarInvitado()">Entrar como Invitado</button>
         </div>
     </section>
 
     <main id="appContent" style="display:none;">
-        <header class="header-main">
-            <div>
-                <h2>Hola, <span id="userName"></span></h2>
-                <div id="mensajeEspecial" class="msg-disautonomia"></div>
-            </div>
-            <button onclick="salir()" class="btn-exit">Cerrar</button>
+        <header class="main-header">
+            <h3>Hola, <span id="userName"></span></h3>
+            <p id="msgInclusivo" style="font-weight: bold; color: var(--color-principal);"></p>
         </header>
 
-        <div id="inicio" class="tab-content">
-            <div class="card-glass info-card memorial">
-                <h3>🌸 In Memoriam</h3>
-                <p><strong>Prof. Andrea Robles</strong></p>
-                <p>Tu pasión por enseñar y tu fuerza ante la adversidad son el motor de esta ruta. Tu legado late en cada paso inclusivo que damos.</p>
+        <div id="inicio" class="seccion">
+            <div class="card">
+                <h2>Sobre Nosotros</h2>
+                <p>Somos la <strong>E.T.R. Fermín Toro</strong>. Esta ruta turística es inclusiva y patrimonial, creada para demostrar que el corazón no tiene límites.</p>
             </div>
-
-            <div class="card-glass info-card">
-                <h3>Sobre Nosotros</h3>
-                <p>Somos estudiantes de la <strong>E.T.R. Fermín Toro</strong>. A través del Proyecto Conciencia, creamos esta Ruta Turística Patrimonial e Inclusiva para demostrar que los diagnósticos no definen nuestros límites.</p>
-            </div>
-        </div>
-
-        <div id="ruta" class="tab-content" style="display:none;">
-            <div class="card-glass info-card">
-                <h3>📍 Nuestra Ruta</h3>
-                <div class="map-box">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3926.883344654922!2d-68.0039236!3d10.1818165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e8067856e7275d3%3A0xa1177699ca0989f6!2sPlaza%20Bol%C3%ADvar%20de%20Valencia!5e0!3m2!1ses!2sve!4v1710000000000!5m2!1ses!2sve" width="100%" height="250" style="border:0; border-radius:15px;" allowfullscreen="" loading="lazy"></iframe>
-                </div>
-                <ul class="ruta-list">
-                    <li>🏛️ Plaza Bolívar de Valencia</li>
-                    <li>⛪ Catedral de Valencia</li>
-                    <li>🎭 Teatro Municipal</li>
-                </ul>
+            
+            <div class="card memorial">
+                <h3>🌸 Para la Prof. Andrea Robles</h3>
+                <p>"Usted nos enseñó que la verdadera fuerza nace de la resiliencia. Su latido sigue guiando cada paso de esta ruta inclusiva."</p>
             </div>
         </div>
 
-        <div id="ia-chat" class="tab-content" style="display:none;">
-            <div class="card-glass info-card">
-                <h3>🤖 Asistencia IA</h3>
-                <p>Pregunta lo que desees sobre la ruta o condiciones de salud. (Acceso gratuito).</p>
-                <a href="https://zapier.com/interfaces/chat" target="_blank" class="btn-main" style="text-decoration:none; display:inline-block; text-align:center;">Abrir Chat con IA</a>
+        <div id="ruta" class="seccion" style="display:none;">
+            <div class="card">
+                <h2>📍 Nuestra Ruta</h2>
+                <p>Explora el patrimonio de Valencia con nosotros.</p>
+                <button class="btn-primary">Ver Mapa de la Ruta</button>
             </div>
         </div>
 
-        <nav class="nav-bottom">
-            <button onclick="mostrarTab('inicio')">🏠</button>
-            <button onclick="mostrarTab('ruta')">🗺️</button>
-            <button onclick="mostrarTab('ia-chat')">🤖</button>
+        <div id="ayuda" class="seccion" style="display:none;">
+            <div class="card">
+                <h2>🤖 Asistente Virtual</h2>
+                <p>Haz clic abajo para hablar con nuestra IA de ayuda.</p>
+                <button class="btn-primary" onclick="alert('Abriendo ChatBot...')">Hablar con el Bot</button>
+            </div>
+        </div>
+
+        <nav class="nav-bar">
+            <button onclick="navegar('inicio')">🏠<br>Inicio</button>
+            <button onclick="navegar('ruta')">🗺️<br>Ruta</button>
+            <button onclick="navegar('ayuda')">🤖<br>Bot</button>
         </nav>
 
-        <footer class="footer-app">
-            <p>© 2026 - E.T.R. Fermín Toro</p>
-            <p>Ruta Turística Patrimonial e Inclusiva Fermín Toro</p>
+        <footer>
+            <hr>
+            <p><strong>E.T.R. Fermín Toro</strong></p>
+            <p>Ruta Turística Patrimonial e Inclusiva</p>
+            <p>© 2026</p>
         </footer>
     </main>
 </body>
+</html>

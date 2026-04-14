@@ -2,15 +2,17 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unidos por un Latido</title>
-    <link rel="stylesheet" href="style.css?v=force_5">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Latidos - Unidos por un Latido</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, updateProfile } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
+        // CONFIGURACIÓN DE TU FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyAi-mdZ6bxvuWYiqliA1Z43IW6nQ0AWFSw",
             authDomain: "latidos-val.firebaseapp.com",
@@ -23,117 +25,133 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
 
-        // Función para cambiar colores
-        window.cambiarColor = (condicion) => {
+        // --- FUNCIONES DE AUTENTICACIÓN ---
+        window.registrarUsuario = async function() {
+            const email = document.getElementById('regEmail').value;
+            const pass = document.getElementById('regPass').value;
+            const nombre = document.getElementById('regNombre').value;
+            const condicion = document.getElementById('regCondicion').value;
+
+            try {
+                const result = await createUserWithEmailAndPassword(auth, email, pass);
+                await updateProfile(result.user, { displayName: nombre });
+                await setDoc(doc(db, "usuarios", result.user.uid), {
+                    nombre: nombre, condicion: condicion
+                });
+                alert(`¡Bienvenida ${nombre}! Registro exitoso.`);
+            } catch (error) { alert("Error: " + error.message); }
+        };
+
+        window.iniciarSesion = async function() {
+            const email = document.getElementById('logEmail').value;
+            const pass = document.getElementById('logPass').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+            } catch (error) { alert("Error: " + error.message); }
+        };
+
+        window.iniciarConGoogle = async () => {
+            try { await signInWithPopup(auth, googleProvider); } 
+            catch (e) { alert(e.message); }
+        };
+
+        window.cerrarSesion = () => signOut(auth);
+
+        // --- LÓGICA DE COLOR Y ESTADO ---
+        window.cambiarColorPorCondicion = function(condicion) {
             const root = document.documentElement;
             const colores = {
                 'disautonomia': '#40E0D0',
+                'tourette': '#008080',
+                'lupus': '#6A0DAD',
                 'tea': '#FF8C00',
-                'cronica': '#6A0DAD',
+                'tdah': '#FF8C00',
+                'fibromialgia': '#FF69B4',
                 'ninguna': '#6A0DAD'
             };
             root.style.setProperty('--color-principal', colores[condicion] || '#6A0DAD');
-            if(condicion === 'disautonomia') {
-                document.getElementById('msgInclusivo').innerText = "💪 Si yo puedo, ¡tú también!";
-            }
-        };
-
-        // ENTRAR COMO INVITADO (Rápido y fácil)
-        window.entrarInvitado = () => {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('appContent').style.display = 'block';
-            document.getElementById('userName').innerText = "Invitado";
-        };
-
-        window.entrar = async () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('pass').value;
-            try { await signInWithEmailAndPassword(auth, email, pass); } 
-            catch (e) { alert("Revisa tus datos o entra como invitado."); }
         };
 
         onAuthStateChanged(auth, async (user) => {
+            const loginView = document.getElementById("loginSection");
+            const appView = document.getElementById("appContent");
             if (user) {
                 const docSnap = await getDoc(doc(db, "usuarios", user.uid));
                 const data = docSnap.data();
-                window.cambiarColor(data?.condicion || 'ninguna');
-                document.getElementById('userName').innerText = data?.nombre || "Usuario";
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('appContent').style.display = 'block';
+                const nombre = data?.nombre || user.displayName || "Viajero";
+                const condicion = data?.condicion || "ninguna";
+                
+                window.cambiarColorPorCondicion(condicion);
+                document.getElementById('welcomeMsg').innerText = `¡Bienvenida, ${nombre} a Latidos!`;
+                loginView.style.display = "none";
+                appView.style.display = "block";
+            } else {
+                loginView.style.display = "flex";
+                appView.style.display = "none";
             }
         });
-
-        window.navegar = (id) => {
-            document.querySelectorAll('.seccion').forEach(s => s.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
-        };
     </script>
 </head>
 <body>
-    <div class="circulo c1"></div>
-    <div class="circulo c2"></div>
-    <div class="circulo c3"></div>
+    <div class="circulo-fondo c1"></div>
+    <div class="circulo-fondo c2"></div>
+    <div class="circulo-fondo c3"></div>
 
-    <section id="loginSection" class="auth-page">
+    <section id="loginSection" class="login-container">
         <div class="login-card">
+            <img src="logo.png" alt="Logo" class="logo-main">
             <h1>Unidos por un Latido</h1>
-            <p>Proyecto Conciencia</p>
-            
-            <input type="email" id="email" placeholder="Correo">
-            <input type="password" id="pass" placeholder="Contraseña">
-            
-            <button class="btn-primary" onclick="entrar()">Iniciar Sesión</button>
-            <button class="btn-guest" onclick="entrarInvitado()">Entrar como Invitado</button>
+            <div class="homenaje-box">
+                <p>🌸 <strong>En memoria de la Prof. Andrea Robles</strong></p>
+                <p>Su resiliencia es el latido que nos inspira a seguir.</p>
+            </div>
+
+            <div id="loginPanel">
+                <input type="email" id="logEmail" placeholder="Correo electrónico">
+                <input type="password" id="logPass" placeholder="Contraseña">
+                <button class="btn-main" onclick="iniciarSesion()">Iniciar Sesión</button>
+                <button class="btn-google" onclick="iniciarConGoogle()">Entrar con Google</button>
+                <p class="toggle-link" onclick="document.getElementById('loginPanel').style.display='none'; document.getElementById('regPanel').style.display='block';">¿No tienes cuenta? Regístrate aquí</p>
+            </div>
+
+            <div id="regPanel" style="display:none;">
+                <input type="text" id="regNombre" placeholder="Tu Nombre">
+                <input type="email" id="regEmail" placeholder="Correo">
+                <input type="password" id="regPass" placeholder="Contraseña">
+                <select id="regCondicion">
+                    <option value="ninguna">¿Cuál es tu condición? (Opcional)</option>
+                    <option value="disautonomia">🩵 Disautonomía</option>
+                    <option value="tourette">Teal - Tourette</option>
+                    <option value="lupus">Morado - Crónicas</option>
+                    <option value="tdah">Naranja - TDAH/TEA</option>
+                    <option value="fibromialgia">Rosado - Fibromialgia</option>
+                </select>
+                <button class="btn-main" onclick="registrarUsuario()">Crear Cuenta</button>
+                <p class="toggle-link" onclick="document.getElementById('regPanel').style.display='none'; document.getElementById('loginPanel').style.display='block';">Ya tengo cuenta</p>
+            </div>
         </div>
     </section>
 
     <main id="appContent" style="display:none;">
         <header class="main-header">
-            <h3>Hola, <span id="userName"></span></h3>
-            <p id="msgInclusivo" style="font-weight: bold; color: var(--color-principal);"></p>
+            <span id="welcomeMsg"></span>
+            <button class="btn-out" onclick="cerrarSesion()">Cerrar</button>
         </header>
 
-        <div id="inicio" class="seccion">
-            <div class="card">
-                <h2>Sobre Nosotros</h2>
-                <p>Somos la <strong>E.T.R. Fermín Toro</strong>. Esta ruta turística es inclusiva y patrimonial, creada para demostrar que el corazón no tiene límites.</p>
-            </div>
-            
-            <div class="card memorial">
-                <h3>🌸 Para la Prof. Andrea Robles</h3>
-                <p>"Usted nos enseñó que la verdadera fuerza nace de la resiliencia. Su latido sigue guiando cada paso de esta ruta inclusiva."</p>
-            </div>
-        </div>
-
-        <div id="ruta" class="seccion" style="display:none;">
-            <div class="card">
-                <h2>📍 Nuestra Ruta</h2>
-                <p>Explora el patrimonio de Valencia con nosotros.</p>
-                <button class="btn-primary">Ver Mapa de la Ruta</button>
-            </div>
-        </div>
-
-        <div id="ayuda" class="seccion" style="display:none;">
-            <div class="card">
-                <h2>🤖 Asistente Virtual</h2>
-                <p>Haz clic abajo para hablar con nuestra IA de ayuda.</p>
-                <button class="btn-primary" onclick="alert('Abriendo ChatBot...')">Hablar con el Bot</button>
-            </div>
-        </div>
+        <section id="inicio" class="content-card">
+            <h2>Un Latido que Late Fuerte</h2>
+            <p>Este proyecto es una iniciativa para honrar la memoria de nuestra <strong>Profesora Andrea Robles</strong>, quien nos enseñó que la pasión por el trabajo es la mejor medicina.</p>
+            <p>Liderado por una estudiante con <strong>Disautonomía</strong>, demostrando que somos más que un diagnóstico.</p>
+        </section>
 
         <nav class="nav-bar">
-            <button onclick="navegar('inicio')">🏠<br>Inicio</button>
-            <button onclick="navegar('ruta')">🗺️<br>Ruta</button>
-            <button onclick="navegar('ayuda')">🤖<br>Bot</button>
+            <button onclick="window.location.reload()">🏠 Inicio</button>
+            <button onclick="alert('Ruta: Plaza Bolívar -> Bicentenario')">🗺️ Ruta</button>
+            <button onclick="alert('Próximamente audios')">🎧 Audios</button>
+            <button onclick="alert('IG: @unidosporunlatido')">📍 Contacto</button>
         </nav>
-
-        <footer>
-            <hr>
-            <p><strong>E.T.R. Fermín Toro</strong></p>
-            <p>Ruta Turística Patrimonial e Inclusiva</p>
-            <p>© 2026</p>
-        </footer>
     </main>
 </body>
 </html>

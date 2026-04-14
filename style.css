@@ -1,8 +1,8 @@
+/* VARIABLES Y RESET */
 :root {
-    --fondo: #F5F5DC;
+    --bg-cream: #F5F5DC;
     --texto: #2F2F2F;
     --color-principal: #6A0DAD;
-    --blanco: #ffffff;
 }
 
 * {
@@ -12,353 +12,134 @@
 }
 
 body {
-    background-color: var(--fondo);
+    background-color: var(--bg-cream);
+    font-family: 'Segoe UI', Roboto, sans-serif;
     color: var(--texto);
-    font-family: 'Montserrat', sans-serif;
-    line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 80px;
 }
 
-/* ========== PANTALLA DE LOGIN ========== */
-.login-section {
+/* CÍRCULOS DE FONDO (BLOBS) */
+.blob {
+    position: fixed;
+    border-radius: 50%;
+    z-index: -1;
+    filter: blur(65px);
+    opacity: 0.25;
+    animation: move 20s infinite alternate ease-in-out;
+}
+.b1 { width: 300px; height: 300px; top: -50px; left: -50px; background: #40E0D0; }
+.b2 { width: 350px; height: 350px; bottom: 0; right: -50px; background: #FF69B4; }
+.b3 { width: 200px; height: 200px; top: 40%; right: 10%; background: #FF8C00; }
+
+@keyframes move {
+    from { transform: translate(0,0); }
+    to { transform: translate(50px, 50px); }
+}
+
+/* CONTENEDORES GLASS */
+.full-center {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background-color: var(--fondo);
+    height: 100vh;
     padding: 20px;
 }
 
-.login-card {
-    background: var(--blanco);
-    border-radius: 40px;
-    padding: 40px 25px;
-    position: relative;
-    overflow: hidden;
+.card-glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+    border: 3px solid var(--color-principal);
+}
+
+.login-box {
+    width: 100%;
+    max-width: 380px;
     text-align: center;
-    max-width: 450px;
-    width: 100%;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
 }
 
-.circulos-login {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
+.info-card {
+    margin: 15px;
+    border-left: 6px solid var(--color-principal);
 }
 
-.circulo-login {
-    position: absolute;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    opacity: 0.15;
-}
-.circulo-login:nth-child(1) { top: -50px; left: -50px; }
-.circulo-login:nth-child(2) { top: 20px; right: -60px; }
-.circulo-login:nth-child(3) { bottom: -40px; left: -30px; }
-.circulo-login:nth-child(4) { bottom: 50px; right: -50px; }
-.circulo-login:nth-child(5) { top: 40%; left: -70px; }
-
-.logo-login {
-    width: 100px;
-    border-radius: 20px;
-    margin-bottom: 15px;
-}
-
-.login-card h1 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--color-principal);
-}
-
-.subtitulo-login {
-    color: #666;
-    margin-bottom: 20px;
-}
-
-.historia-login {
-    background: rgba(106, 13, 173, 0.08);
-    padding: 15px;
-    border-radius: 20px;
-    margin: 20px 0;
-    font-size: 0.85rem;
-}
-
-.tabs-login {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.login-tab {
-    flex: 1;
+/* MENSAJE ESPECIAL DISAUTONOMÍA */
+.msg-disautonomia {
+    display: none;
+    margin-top: 10px;
     padding: 10px;
-    background: #eee;
-    color: #333;
-    border-radius: 30px;
-    cursor: pointer;
-    border: none;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-}
-
-.login-tab.active {
     background: var(--color-principal);
     color: white;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    animation: fadeIn 1s;
 }
+.msg-disautonomia.active { display: block; }
 
-.panel-login {
-    text-align: center;
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+/* FORMULARIOS */
 input, select {
     width: 100%;
     padding: 12px;
     margin: 8px 0;
+    border-radius: 12px;
     border: 1px solid #ddd;
-    border-radius: 30px;
-    font-size: 0.9rem;
-    font-family: 'Montserrat', sans-serif;
 }
 
-.btn-primario {
+.btn-main {
     background: var(--color-principal);
     color: white;
-    padding: 12px;
-    border-radius: 30px;
-    font-weight: 700;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
     border: none;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.btn-google {
-    background: #db4437;
-    color: white;
-    padding: 12px;
-    border-radius: 30px;
-    cursor: pointer;
+    padding: 14px;
     width: 100%;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
     margin-top: 10px;
-    border: none;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
 }
 
-.btn-invitado {
-    background: transparent;
-    border: 2px solid var(--color-principal);
-    color: var(--color-principal);
-    padding: 10px;
-    border-radius: 30px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 15px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-}
-
-/* ========== APP PRINCIPAL ========== */
-.header-app {
-    background: var(--blanco);
-    padding: 15px;
-    border-radius: 0 0 30px 30px;
+/* NAVEGACIÓN Y FOOTER */
+.header-main {
+    padding: 20px;
+    background: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
+    border-bottom: 4px solid var(--color-principal);
 }
 
-.logo-app {
-    width: 45px;
-    border-radius: 12px;
-}
-
-.saludo-app {
-    font-weight: 700;
-    color: var(--color-principal);
-    text-align: center;
-    flex: 1;
-}
-
-.btn-cerrar {
-    background: #ff6b6b;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    cursor: pointer;
-    border: none;
-    font-family: 'Montserrat', sans-serif;
-}
-
-/* ========== NAVEGACIÓN TIPO CANVA ========== */
-.nav-botones {
+.nav-bottom {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 10px 30px;
+    border-radius: 50px;
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 25px;
+    gap: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
-.boton-nav {
-    background: transparent;
-    color: #888;
-    padding: 8px 16px;
-    border-radius: 30px;
-    cursor: pointer;
+.nav-bottom button {
+    background: none;
     border: none;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-}
-
-.boton-nav.activo {
-    background: var(--color-principal);
-    color: white;
-}
-
-/* ========== SECCIONES ========== */
-.seccion-contenido {
-    display: none;
-    animation: fadeIn 0.3s ease;
-    text-align: center;
-}
-
-.seccion-contenido.seccion-activa {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* ========== TARJETAS (TODAS CENTRADAS) ========== */
-.tarjeta, .tarjeta-ruta, .tarjeta-audio, .tarjeta-guia, .tarjeta-evento, .tarjeta-contacto {
-    background: var(--blanco);
-    border-radius: 30px;
-    padding: 25px;
-    margin-bottom: 20px;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-h2 {
     font-size: 1.6rem;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 20px;
-    color: var(--color-principal);
-}
-
-h3 {
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-/* ========== ESTADÍSTICAS ========== */
-.stats {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 15px;
-}
-
-.stat-numero {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--color-principal);
-}
-
-/* ========== TEXTOS EMOCIONALES ========== */
-.texto-emocional {
-    background: rgba(106, 13, 173, 0.05);
-    padding: 15px;
-    border-radius: 20px;
-    margin: 15px 0;
-}
-
-/* ========== RUTA ========== */
-.imagen-ruta {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 20px;
-    margin-bottom: 15px;
-    background: #eee;
-}
-
-.btn-audio {
-    background: var(--color-principal);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 30px;
     cursor: pointer;
-    border: none;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    margin-top: 10px;
-    width: 100%;
 }
 
-/* ========== GUÍAS ========== */
-.icono-guia {
-    font-size: 3rem;
-    margin-bottom: 10px;
-}
-
-.etiqueta-condicion {
-    display: inline-block;
-    background: rgba(106, 13, 173, 0.1);
-    padding: 5px 12px;
-    border-radius: 20px;
+.footer-app {
+    text-align: center;
+    padding: 20px;
     font-size: 0.75rem;
-    margin-top: 10px;
+    color: #777;
 }
 
-/* ========== EVENTOS ========== */
-.fecha-evento {
-    color: var(--color-principal);
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-.detalle-evento {
-    margin-top: 10px;
-    font-size: 0.8rem;
-    color: #666;
-}
-
-/* ========== CÍRCULOS FLOTANTES EN INICIO ========== */
-.circulos-fondo {
-    position: relative;
-    height: 80px;
-    margin-bottom: 10px;
-}
-
-.circulo-fondo {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    opacity: 0.15;
-}
-.circulo-fondo:nth-child(1) { top: 0; left: 5%; }
-.circulo-fondo:nth-child(2) { top: 10px; right: 10%; }
-.circulo-fondo:nth-child(3) { bottom: 0; left: 20%; }
-.circulo-fondo:nth-child(4) { top: 20px; right: 25%; }
-.circulo-fondo:nth-child(5) { bottom: 10px; left: 40%; }
-
-/* ========== RESPONSIVE ========== */
-@media (max-width: 600px) {
-    .nav-botones { gap: 5px; }
-    .boton-nav { font-size: 0.7rem; padding: 6px 10px; }
-    .tarjeta, .tarjeta-ruta, .tarjeta-audio, .tarjeta-guia, .tarjeta-evento, .tarjeta-contacto { padding: 15px; }
+.memorial {
+    background: rgba(255, 250, 240, 0.9);
+    border: 1px dashed var(--color-principal);
 }
